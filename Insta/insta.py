@@ -1,3 +1,4 @@
+import random
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -8,13 +9,61 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from pydantic import BaseModel
+import csv
+
+
+class Credentials(BaseModel):
+    email: str
+    password: str
 
 
 class InstaBot:
-    def __init__(self, browser) -> None:
-        self.browser=browser
+    def __init__(self, browser, credentials_file, proxy_file="proxies.csv") -> None:
+        self.browser = browser
+        self.credentials_file = credentials_file
 
         # Initialize resources and return
+
+        self.URL = "https://www.instagram.com/accounts/login/"
+        self.proxy_file = proxy_file
+        self.proxies = self.get_proxies()
+
+    def get_proxies(self):
+        proxies = []
+        with open(self.proxy_file, "r") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                proxy = {
+                    "ip": row[0],
+                    "port": row[1],
+                    "country": row[2],
+                    "speed": row[3],
+                    "type": row[4],
+                    "anonymity": row[5],
+                }
+                proxies.append(proxy)
+        return proxies
+
+    def read_credentials(self):
+        with open(self.credentials_file, "r") as f:
+            for line in f:
+                email, password = line.strip().split(",")
+                yield Credentials(email=email, password=password)
+
+    def __enter__(self):
+
+        # Initialize webdriver with proxy if provided
+        if self.proxies:
+            proxy = random.choice(self.proxies)
+            # breakpoint()
+            # webdriver.DesiredCapabilities.CHROME["proxy"] = {
+            #     "httpProxy": proxy.get("ip"),
+            #     "ftpProxy": proxy.get("ip"),
+            #     "sslProxy": proxy.get("ip"),
+            #     "proxyType": "MANUAL",
+            # }
+
         if self.browser == "chrome":
             driver = webdriver.Chrome(ChromeDriverManager().install())
         elif self.browser == "firefox":
@@ -22,27 +71,24 @@ class InstaBot:
         else:
             raise ValueError("Invalid browser name")
         self.driver = driver
-        self.URL="https://www.instagram.com/accounts/login/"
-        # return self.driver
-    def __enter__(self):
+
         return self
-    # Navigate to the Instagram login page
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.quit()
 
     def get_url(self):
         self.driver.get(self.URL)
 
-    # Enter your login credentials and click the login button
-    def login(self):
+    def login(self, credentials):
         username_input = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.NAME, "username"))
         )
         password_input = self.driver.find_element(By.NAME, "password")
 
         # Enter your credentials and submit the form
-        username_input.send_keys("usama.khan.codedesk@gmail.com")
-        password_input.send_keys("Admin#125")
+        username_input.send_keys(credentials.email)
+        password_input.send_keys(credentials.password)
         password_input.submit()
         sleep(5)
 
@@ -87,16 +133,3 @@ class InstaBot:
             story_prompt.click()
         except TimeoutException:
             print("Not found Story")
-        # Wait for the page to load and navigate to the first story
-        sleep(50)
-
-        # driver.get("https://www.instagram.com/stories/username/story-id/")
-
-        # View the story by clicking through it
-        # sleep(5)
-        # next_button = driver.find_element_by_css_selector("button[class='coreSpriteRightChevron']")
-        # while next_button.is_displayed():
-        #     next_button.click()
-        #     sleep(2)
-
-        # Close the browser window

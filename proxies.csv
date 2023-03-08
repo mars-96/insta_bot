@@ -1,0 +1,33 @@
+IP address,Port,Country/city,Speed,Type,Level of anonymity
+145.239.85.58,9300,Poland,500 ms,SOCKS4, SOCKS5,high
+46.4.96.137,1080,Germany,580 ms,SOCKS5,high
+47.91.88.100,1080,Germany "Frankfurt am Main",260 ms,SOCKS5,high
+45.77.56.114,30205,United Kingdom London,320 ms,SOCKS4, SOCKS5,high
+82.196.11.105,1080,Netherlands Amsterdam,580 ms,SOCKS5,high
+51.254.69.243,3128,France,440 ms,HTTPS,high
+178.62.193.19,1080,Netherlands Amsterdam,580 ms,SOCKS5,high
+188.226.141.127,1080,Netherlands Amsterdam,580 ms,SOCKS5,high
+217.23.6.40,1080,Netherlands,400 ms,SOCKS5,high
+185.153.198.226,32498,Moldova,540 ms,SOCKS4, SOCKS5,high
+81.171.24.199,3128,Netherlands,280 ms,HTTPS,high
+5.189.224.84,10000,Russian Federation,560 ms,SOCKS4, SOCKS5,high
+108.61.175.7,31802,United Kingdom London,300 ms,SOCKS4, SOCKS5,high
+176.31.200.104,3128,France,340 ms,HTTPS,high
+83.77.118.53,17171,Switzerland Ebikon,400 ms,HTTPS,high
+173.192.21.89,80,United States Dallas,520 ms,HTTP, HTTPS,high
+163.172.182.164,3128,France,300 ms,HTTPS,high
+163.172.168.124,3128,France,300 ms,HTTPS,high
+164.68.105.235,3128,United States "Lake Forest",320 ms,HTTPS,high
+5.199.171.227,3128,Lithuania,300 ms,HTTPS,high
+93.171.164.251,8080,Russian Federation Livny,120 ms,HTTPS,high
+212.112.97.27,3128,Kyrgyzstan,380 ms,HTTPS,high
+51.68.207.81,80,United Kingdom,580 ms,HTTPS,high
+91.211.245.176,8080,Lithuania,200 ms,HTTPS,high
+84.201.254.47,3128,Russian Federation Izhevsk,240 ms,HTTPS,high
+95.156.82.35,3128,Russian Federation Ulan-Ude,240 ms,HTTP, HTTPS,high
+185.118.141.254,808,Turkey "Magnesia ad Sipylum",480 ms,HTTP, HTTPS,high
+164.68.98.169,9300,Germany,360 ms,SOCKS5,high
+217.113.122.142,3128,Russian Federation Tolyatti,180 ms,HTTPS,high
+188.100.212.208,21129,Germany Dormagen,480 ms,HTTPS,high
+83.77.118.53,17171,Switzerland Ebikon,400 ms,HTTPS,high
+83.79.50.233,64527,Switzerland Baar,460 ms,HTTPS,high
