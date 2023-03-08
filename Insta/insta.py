@@ -74,9 +74,11 @@ class InstaBot:
             notNow_info_prompt.click()
         except TimeoutException:
             print("not found popup")
-
+        
+        sleep(3)
         STORY_URL = "https://instagram.com/stories/uarhamsoft/3053908816545589341?utm_source=ig_story_item_share&igshid=MDJmNzVkMjY="
         self.driver.get(STORY_URL)
+        sleep(3)
 
         try:
             story_prompt = WebDriverWait(self.driver, 10).until(
@@ -85,9 +87,22 @@ class InstaBot:
 
             # not_now_button = driver.find_element_by_xpath(".//button[text()='Not Now']")
             story_prompt.click()
+            
         except TimeoutException:
             print("Not found Story")
         # Wait for the page to load and navigate to the first story
+
+        try:
+            next_button = WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, "//button[@aria-label='Next']"))
+            )
+            
+            while next_button.is_displayed():
+                sleep(5)
+                next_button.click()
+        except TimeoutException:
+            print("Not found next")
+                
         sleep(50)
 
         # driver.get("https://www.instagram.com/stories/username/story-id/")
