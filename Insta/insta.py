@@ -28,7 +28,8 @@ class InstaBot:
 
         # Initialize resources and return
 
-        self.URL = "https://www.instagram.com/accounts/login/"
+        # self.URL = "https://www.instagram.com/accounts/login/"
+        self.URL = "https://www.google.com/"
         self.proxy_file = proxy_file
         self.proxies = self.get_proxies()
 
@@ -55,10 +56,12 @@ class InstaBot:
                 yield Credentials(email=email, password=password)
 
     def __enter__(self):
-
         # Initialize webdriver with proxy if provided
         if self.proxies:
-            proxy = random.choice(self.proxies)
+            rand_proxy = random.choice(self.proxies)
+            # proxy=f'{rand_proxy.get("ip")}:{rand_proxy.get("port")}'
+            # proxy = f"103.149.146.34:80"
+
             # breakpoint()
             # webdriver.DesiredCapabilities.CHROME["proxy"] = {
             #     "httpProxy": proxy.get("ip"),
@@ -66,16 +69,26 @@ class InstaBot:
             #     "sslProxy": proxy.get("ip"),
             #     "proxyType": "MANUAL",
             # }
-
+        # breakpoint()
         if self.browser == "chrome":
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument(f'--proxy-server={rand_proxy.get("ip")}:{rand_proxy.get("port")}')
             try:
                 # Try to create a Chrome driver instance
-                driver = webdriver.Chrome()
+                driver = webdriver.Chrome(options=chrome_options)
             except:
                 ChromeDriverManager().install()
-                driver = webdriver.Chrome()
+                driver = webdriver.Chrome(options=chrome_options)
+            # chrome_options.add_argument(f'--proxy-server=103.145.113.78:80')
+            # driver = webdriver.Chrome(
+            #     ChromeDriverManager().install(), options=chrome_options
+            # )
         elif self.browser == "firefox":
-            driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+            firefox_options = webdriver.FirefoxOptions()
+            firefox_options.add_argument(f'--proxy-server={rand_proxy.get("ip")}:{rand_proxy.get("port")}')
+            driver = webdriver.Firefox(
+                executable_path=GeckoDriverManager().install(), options=firefox_options
+            )
         else:
             raise ValueError("Invalid browser name")
         self.driver = driver
@@ -157,7 +170,7 @@ class InstaBot:
 
             # not_now_button = driver.find_element_by_xpath(".//button[text()='Not Now']")
             story_prompt.click()
-            
+
         except TimeoutException:
             print("Not found Story")
         # Wait for the page to load and navigate to the first story
@@ -200,6 +213,9 @@ class InstaBot:
             print("Not found menu")
         
         sleep(random.randint(5, 10))
-        self.driver.get(self.URL)
+        # self.driver.get(self.URL)
                 
-        sleep(20)
+        # sleep(20)
+        #     print("Not found next")
+
+        # sleep(50)
