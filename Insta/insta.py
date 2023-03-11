@@ -11,6 +11,9 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from pydantic import BaseModel
 import csv
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 class Credentials(BaseModel):
@@ -65,7 +68,12 @@ class InstaBot:
             # }
 
         if self.browser == "chrome":
-            driver = webdriver.Chrome(ChromeDriverManager().install())
+            try:
+                # Try to create a Chrome driver instance
+                driver = webdriver.Chrome()
+            except:
+                ChromeDriverManager().install()
+                driver = webdriver.Chrome()
         elif self.browser == "firefox":
             driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
         else:
@@ -85,14 +93,29 @@ class InstaBot:
             EC.visibility_of_element_located((By.NAME, "username"))
         )
         password_input = self.driver.find_element(By.NAME, "password")
+        # username_input.clear()
+        # password_input.clear()
+        ActionChains(self.driver).move_to_element(username_input).click().key_down(Keys.END).key_down(Keys.SHIFT).send_keys(Keys.HOME).key_up(Keys.SHIFT).key_down(Keys.BACKSPACE).key_up(Keys.BACKSPACE).perform()
+        ActionChains(self.driver).move_to_element(password_input).click().key_down(Keys.END).key_down(Keys.SHIFT).send_keys(Keys.HOME).key_up(Keys.SHIFT).key_down(Keys.BACKSPACE).key_up(Keys.BACKSPACE).perform()
 
+        sleep(1)
         # Enter your credentials and submit the form
         username_input.send_keys(credentials.email)
         password_input.send_keys(credentials.password)
         password_input.submit()
         sleep(5)
+        
+        credentials_error = None 
+        try:
+            credentials_error = WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located((By.ID, "slfErrorAlert"))
+            )
+        except TimeoutException:
+            print("Not found error")
+        
+        return False if credentials_error else True
 
-    def do_something(self):
+    def story_view(self, story_url, username):
         try:
             save_info_prompt = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located(
@@ -108,7 +131,7 @@ class InstaBot:
         except TimeoutException:
             print("not found")
 
-        sleep(6)
+        sleep(3)
         try:
             notNow_info_prompt = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located(
@@ -121,10 +144,11 @@ class InstaBot:
         except TimeoutException:
             print("not found popup")
 
-        sleep(3)
-        STORY_URL = "https://instagram.com/stories/uarhamsoft/3053908816545589341?utm_source=ig_story_item_share&igshid=MDJmNzVkMjY="
-        self.driver.get(STORY_URL)
-        sleep(3)
+        sleep(random.randint(5, 10))
+        # STORY_URL = "https://instagram.com/stories/uarhamsoft/3053908816545589341?utm_source=ig_story_item_share&igshid=MDJmNzVkMjY="
+        print(f">>>>>>{story_url}")
+        self.driver.get(story_url)
+        sleep(random.randint(5, 10))
 
         try:
             story_prompt = WebDriverWait(self.driver, 10).until(
@@ -139,14 +163,43 @@ class InstaBot:
         # Wait for the page to load and navigate to the first story
 
         try:
-            next_button = WebDriverWait(self.driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, "//button[@aria-label='Next']"))
-            )
+            # next_button = WebDriverWait(self.driver, 10).until(
+            #     EC.visibility_of_element_located((By.XPATH, "//button[@aria-label='Next']"))
+            # )
             
-            while next_button.is_displayed():
+            while True:
                 sleep(5)
-                next_button.click()
+                try:
+                    next_button = WebDriverWait(self.driver, 10).until(
+                        EC.visibility_of_element_located((By.XPATH, "//button[@aria-label='Next']"))
+                    )
+                    next_button.click()
+                except TimeoutException:
+                    print("Not found next")
+                    break
+                except StaleElementReferenceException:
+                    # re-try locating the next button
+                    pass
+        except KeyboardInterrupt:
+            print("Interrupted by user")
+        
+        sleep(random.randint(5, 10))
+        self.driver.get(f"https://www.instagram.com/{username}")
+        sleep(random.randint(5, 10))
+        try:
+            menu = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "button._abl-"))
+            )
+            menu.click()
+            
+            logout_button = WebDriverWait(self.driver, 10).until(
+                    EC.visibility_of_element_located((By.CSS_SELECTOR, "button:nth-of-type(10)"))
+                )
+            logout_button.click()
         except TimeoutException:
-            print("Not found next")
+            print("Not found menu")
+        
+        sleep(random.randint(5, 10))
+        self.driver.get(self.URL)
                 
-        sleep(50)
+        sleep(20)
