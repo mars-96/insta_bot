@@ -125,7 +125,7 @@ class App:
                         continue
 
                     # Wait for some time before doing anything else
-                    time.sleep(random.randint(10, 60))
+                    time.sleep(random.randint(10, 15))
 
     def delete_data(self):
         try:
@@ -137,6 +137,7 @@ class App:
         self.password_entry.delete(0, END)
         self.error_label.config(text="")
         self.run_button.config(state=DISABLED)
+        self.update_usernames_listbox()
         
     def check_entry(self):
         if not self.story_link_entry.get():

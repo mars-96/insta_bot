@@ -28,8 +28,8 @@ class InstaBot:
 
         # Initialize resources and return
 
-        # self.URL = "https://www.instagram.com/accounts/login/"
-        self.URL = "https://www.google.com/"
+        self.URL = "https://www.instagram.com/accounts/login/"
+        # self.URL = "https://www.google.com/"
         self.proxy_file = proxy_file
         self.proxies = self.get_proxies()
 
@@ -72,7 +72,7 @@ class InstaBot:
         # breakpoint()
         if self.browser == "chrome":
             chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument(f'--proxy-server={rand_proxy.get("ip")}:{rand_proxy.get("port")}')
+            # chrome_options.add_argument(f'--proxy-server={rand_proxy.get("ip")}:{rand_proxy.get("port")}')
             try:
                 # Try to create a Chrome driver instance
                 driver = webdriver.Chrome(options=chrome_options)
